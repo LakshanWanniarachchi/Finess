@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile , Health
+from .models import Profile , Health , Calories_Burned
 from django.contrib.auth.models import User
 
 
@@ -64,3 +64,9 @@ class HelthSerializer(serializers.ModelSerializer):
     class Meta:
         model = Health
         fields = ['id', 'weight' , 'height']
+        
+        
+class Calories_Burned_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calories_Burned
+        fields = ['id', 'duration_hours','weight' , 'activity']
