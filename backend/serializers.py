@@ -65,8 +65,9 @@ class HelthSerializer(serializers.ModelSerializer):
         model = Health
         fields = ['id', 'weight' , 'height']
         
-        
+
+
 class Calories_Burned_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Calories_Burned
-        fields = ['id', 'duration_hours','weight' , 'activity']
+        fields = ['id', 'duration_hours', 'weight', 'activity']

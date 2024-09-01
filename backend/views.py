@@ -137,35 +137,38 @@ class CalculateBMI(APIView):
     
     
 class Cal_Calories_Burned(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = Calories_Burned_Serializer
     
-     permission_classes = [IsAuthenticated]
-     
-     serializer_class = Calories_Burned_Serializer
-     
-     def post(self, request):
-         
-         
-            serializer = self.serializer_class(data=request.data)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid():
+            user = request.user
+            activity = serializer.validated_data.get('activity')
+            weight = decimal.Decimal(serializer.validated_data.get('weight'))
+            duration = decimal.Decimal(serializer.validated_data.get('duration_hours'))
             
-            if serializer.is_valid():
-                
-                user = request.user
-                activity = serializer.data.get('activity')
-                weight = decimal.Decimal(serializer.data.get('weight'))
-                duration = decimal.Decimal(serializer.data.get('duration_hours'))
-                
-                calories_burned = cal_Calories_Burned_During_Exercise(activity, weight, duration)
-                
-                print(calories_burned)
-                
-                save_data = Calories_Burned.objects.create(user=user, calories_burned=calories_burned, duration_hours=duration, activity=activity)
-                save_data.save()
-                
+            calories_burned = cal_Calories_Burned_During_Exercise(activity, weight, duration)
+            
+            if isinstance(calories_burned, str):  # Check if there's an error message
                 return Response({
+                    "message": calories_burned
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            save_data = Calories_Burned.objects.create(
+                user=user,
+                calories_burned=calories_burned,
+                duration_hours=duration,
+                activity=activity,
+                weight=weight
+            )
+            
+            return Response({
                 "message": "Calories burned calculated successfully!",
                 "calories_burned": calories_burned,
                 "duration": duration,
                 "activity": activity,
-                }, status=status.HTTP_201_CREATED)
-            
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

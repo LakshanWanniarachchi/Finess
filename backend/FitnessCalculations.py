@@ -8,9 +8,9 @@ def cal_Calories_Burned_During_Exercise(activity, weight, duration):
     }
     
     if activity in MET_values:
-        MET = decimal.Decimal(str(MET_values[activity]))
-        weight = decimal.Decimal(str(weight))
-        duration = decimal.Decimal(str(duration))
+        MET = decimal.Decimal(MET_values[activity])
+        weight = decimal.Decimal(weight)
+        duration = decimal.Decimal(duration)
         calories_burned = MET * weight * duration
         
         return calories_burned
