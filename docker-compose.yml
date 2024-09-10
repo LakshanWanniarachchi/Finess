@@ -9,7 +9,7 @@ services:
       - app-network
 
   nginx:
-    build:
+    build: 
       context: ./nginx
     ports:
       - "80:80"

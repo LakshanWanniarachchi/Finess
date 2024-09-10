@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from django.conf import settings
 
 # Create your models here.
@@ -21,6 +20,9 @@ class Health(models.Model):
     bmi = models.DecimalField(max_digits=6, decimal_places=4)  # For example, 123.4567
     weight = models.DecimalField(max_digits=7, decimal_places=2)  # For example, 1234.5678
     height = models.DecimalField(max_digits=6, decimal_places=2)  # For example, 123.4567
+    activity = models.CharField(max_length=50)
+    calories_burned = models.DecimalField(max_digits=7, decimal_places=2)
+    duration_hours = models.DecimalField(max_digits=6, decimal_places=2)
 
 
     def __str__(self):

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Profile , Health , Calories_Burned
 from django.contrib.auth.models import User
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 
@@ -63,11 +63,31 @@ class LoginSerializer(serializers.ModelSerializer):
 class HelthSerializer(serializers.ModelSerializer):
     class Meta:
         model = Health
-        fields = ['id', 'weight' , 'height']
+        fields = ['id', 'weight' , 'height' , 'duration_hours', 'activity']
         
 
 
-class Calories_Burned_Serializer(serializers.ModelSerializer):
+
+
+
+class Calories_Burned_data_Serializer(serializers.ModelSerializer):
     class Meta:
-        model = Calories_Burned
-        fields = ['id', 'duration_hours', 'weight', 'activity']
+        model = Health
+        fields = ['id', 'date', 'calories_burned']
+        
+class Bmi_data_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Health
+        fields = ['id', 'date', 'bmi']
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['user_id'] = user.id
+        token['username'] = user.username
+   
+
+        return token
