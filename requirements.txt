@@ -1,9 +1,12 @@
-asgiref==3.8.1
 Django
-djangorestframework==3.15.2
-djangorestframework-simplejwt==5.3.1
 django-cors-headers
-PyJWT==2.9.0
-sqlparse==0.5.1
-tzdata==2024.1
+djangorestframework
+djangorestframework-simplejwt
+google-ai-generativelanguage
+google-api-core
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-generativeai
+python-dotenv
 
