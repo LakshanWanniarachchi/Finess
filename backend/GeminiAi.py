@@ -17,17 +17,19 @@ class GeminiAi:
             raise ValueError("GEMINI_API_KEY environment variable not set.")
         genai.configure(api_key=api_key)
 
-    def text_gemini_text_generator(self, bmi, Calories):
+    def text_gemini_text_generator(self, bmi, Calories , age , gender):
         # Call the Gemini AI API to generate content
         try:
+             
+             
+             
 
+                             
             model = genai.GenerativeModel("gemini-1.5-flash")
             response = model.generate_content(
-                f"Imagine you are a doctor, I want to get a meal plan for my day workout, my BMI is {bmi} , my calorie burn is like this {Calories} ")
-            # Extracting the generated text
+                f"I want to get a meal plan , I am {gender} , my age is {age},My age is  my BMI is {bmi} , my calorie burn is like this {Calories}, I want Example meal plane only for 1 day")
+           
 
-            print(f"Imagine you are a doctor, I want to get a meal plan for my day workout, my BMI is {
-                  bmi} , my calorie burn is like this {Calories} ")
             return response.text
         except Exception as e:
             print(f"Error generating text: {e}")

@@ -10,14 +10,15 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate  # Add this line
-from .models import Health, Calories_Burned
+from .models import Health, Calories_Burned , Profile
 from rest_framework.generics import CreateAPIView
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer, Calories_Burned_data_Serializer, Bmi_data_Serializer
+from .serializers import CustomTokenObtainPairSerializer, Calories_Burned_data_Serializer, Bmi_data_Serializer ,UserProfileSerializer
 from .GeminiAi import GeminiAi  # Add this line
 # Create your views here.
 import json
+from datetime import datetime
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -218,13 +219,55 @@ class get_diet_plan(APIView):
 
         bmi = Health.objects.filter(user=user).order_by('-date')[:1]
         serializer_bmi = Bmi_data_Serializer(bmi, many=True)
+        
+        
+        user_data = Profile.objects.filter(user=user)
+        
+        serializer_profile = UserProfileSerializer(user_data, many=True)
+        
+       
+        
+        if serializer_profile.data:
+            birth_date = serializer_profile.data[0]['birthday']
+            gender = serializer_profile.data[0]["sex"]
+            
+            
+            if gender in "M":
+                
+                     sex = "Male"  
+            elif gender in "F":
+                
+                sex = "Female"
+                
+            else:
+                
+                sex = "Other"
+                    
+            
+            
+            
+            if birth_date:
+             birth_date = datetime.strptime(birth_date, "%Y-%m-%d")
+             today = datetime.today()
+             age_years = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
+            else:
+             age_years = None
+          
+        else:
+            age_years = None
+            age_months = None
+            age_days = None
+
+      
+            
+        
+      
         text_generator = GeminiAi()
         generated_text = text_generator.text_gemini_text_generator(
-            bmi=serializer_bmi.data, Calories=serializer_Calories.data)
+            bmi=serializer_bmi.data, Calories=serializer_Calories.data , age=   age_years , gender= sex )
 
-        print(serializer_bmi.data)
-        print(serializer_Calories.data)
-
+   
         print(generated_text)
+
         return Response({"message": "Diet plan generated successfully!", "diet_plan": generated_text}, status=status.HTTP_200_OK)
